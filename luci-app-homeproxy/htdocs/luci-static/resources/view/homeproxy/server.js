@@ -81,15 +81,13 @@ return view.extend({
 		o.rmempty = false;
 
 		s = m.section(form.GridSection, 'server', _('Server settings'));
-		var prefmt = { 'prefix': 'server_', 'suffix': '' };
 		s.addremove = true;
 		s.rowcolors = true;
 		s.sortable = true;
 		s.nodescriptions = true;
 		s.modaltitle = L.bind(hp.loadModalTitle, this, _('Server'), _('Add a server'), data[0]);
 		s.sectiontitle = L.bind(hp.loadDefaultLabel, this, data[0]);
-		s.renderSectionAdd = L.bind(hp.renderSectionAdd, this, s, prefmt);
-		s.handleAdd = L.bind(hp.handleAdd, this, s, prefmt);
+		s.renderSectionAdd = L.bind(hp.renderSectionAdd, this, s);
 
 		o = s.option(form.Value, 'label', _('Label'));
 		o.load = L.bind(hp.loadDefaultLabel, this, data[0]);
@@ -708,12 +706,10 @@ return view.extend({
 		o.depends({'network': 'udp', '!reverse': true});
 		o.modalonly = true;
 
-		if (features.has_mptcp) {
-			o = s.option(form.Flag, 'tcp_multi_path', _('MultiPath TCP'));
-			o.default = o.disabled;
-			o.depends({'network': 'udp', '!reverse': true});
-			o.modalonly = true;
-		}
+		o = s.option(form.Flag, 'tcp_multi_path', _('MultiPath TCP'));
+		o.default = o.disabled;
+		o.depends({'network': 'udp', '!reverse': true});
+		o.modalonly = true;
 
 		o = s.option(form.Flag, 'udp_fragment', _('UDP Fragment'),
 			_('Enable UDP fragmentation.'));
