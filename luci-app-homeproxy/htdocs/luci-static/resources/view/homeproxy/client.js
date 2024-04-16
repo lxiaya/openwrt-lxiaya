@@ -300,7 +300,7 @@ return view.extend({
 			_('Performance may degrade slightly, so it is not recommended to enable on when it is not needed.'));
 		so.default = so.enabled;
 		so.depends('tcpip_stack', 'mixed');
-    so.depends('tcpip_stack', 'gvisor');
+                so.depends('tcpip_stack', 'gvisor');
 		so.rmempty = false;
 
 		so = ss.option(form.Flag, 'bypass_cn_traffic', _('Bypass CN traffic'),
