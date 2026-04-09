@@ -36,7 +36,7 @@
 	&nbsp;&nbsp;<%:Current Config File%>:&nbsp;
 	<select class="tool_label_select" id="cfg_name">
 	</select>&nbsp;&nbsp;
-	<input type="button" class="btn cbi-button cbi-button-apply" value="<%:Switch%>" onclick="return switch_config(this)" />
+	<input type="button" class="btn cbi-button cbi-button-apply" value="<%:SwiTch%>" onclick="return switch_config(this)" />
 	&nbsp;
 	</span>
 </li>
@@ -55,7 +55,7 @@
 		var Delete_Groups = document.getElementById('cbi-table-1-Delete_Groups');
 		var rule_mg = document.getElementById('cbi-table-1-rule_mg');
 		var pro_mg = document.getElementById('cbi-table-1-pro_mg');
-    
+
 		setTimeout("get_header()",100);
 		
 		if (Commit) {
@@ -144,7 +144,7 @@
 
 	function restore_config(btn)
     {
-        btn.value    = '<%:Restore Default Config%>';
+        btn.value    = '<%:Restore Default%>';
         btn.disabled = true;
         var r = confirm("<%:Are you sure want to restore the default config?%>")
         if (r == true) {

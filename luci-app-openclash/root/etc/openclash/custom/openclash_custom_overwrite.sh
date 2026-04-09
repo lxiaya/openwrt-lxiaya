@@ -6,12 +6,13 @@
 # This script is called by /etc/init.d/openclash
 # Add your custom overwrite scripts here, they will be take effict after the OpenClash own srcipts
 
-LOG_OUT "Tip: Start Running Custom Overwrite Scripts..."
+LOG_TIP "Start Running Custom Overwrite Scripts..."
 LOGTIME=$(echo $(date "+%Y-%m-%d %H:%M:%S"))
 LOG_FILE="/tmp/openclash.log"
-CONFIG_FILE="$1" #config path
+#Config Path
+CONFIG_FILE="$1"
 
-#Simple Demo:
+    #Simple Demo:
     #Key Overwrite Demo
     #1--config path
     #2--key name
@@ -28,12 +29,46 @@ CONFIG_FILE="$1" #config path
     #ruby_edit "$CONFIG_FILE" "['dns']['nameserver-policy']" "{'+.msftconnecttest.com'=>'114.114.114.114', '+.msftncsi.com'=>'114.114.114.114', 'geosite:gfw'=>['https://dns.cloudflare.com/dns-query', 'https://dns.google/dns-query#ecs=1.1.1.1/24&ecs-override=true'], 'geosite:cn'=>['114.114.114.114'], 'geosite:geolocation-!cn'=>['https://dns.cloudflare.com/dns-query', 'https://dns.google/dns-query#ecs=1.1.1.1/24&ecs-override=true']}"
     #ruby_edit "$CONFIG_FILE" "['sniffer']" "{'enable'=>true, 'parse-pure-ip'=>true, 'force-domain'=>['+.netflix.com', '+.nflxvideo.net', '+.amazonaws.com', '+.media.dssott.com'], 'skip-domain'=>['+.apple.com', 'Mijia Cloud', 'dlg.io.mi.com', '+.oray.com', '+.sunlogin.net'], 'sniff'=>{'TLS'=>nil, 'HTTP'=>{'ports'=>[80, '8080-8880'], 'override-destination'=>true}}}"
 
+    #Map Edit Demo
+    #1--config path
+    #2--map name
+    #3--key name
+    #4--sub key name
+    #5--value
+    #ruby_map_edit "$CONFIG_FILE" "['proxy-providers']" "HK" "['url']" "http://test.com"
+
+    #Hash Merge Demo
+    #1--config path
+    #2--key name
+    #3--hash
+    #ruby_merge_hash "$CONFIG_FILE" "['proxy-providers']" "'TW'=>{'type'=>'http', 'path'=>'./proxy_provider/TW.yaml', 'url'=>'https://gist.githubusercontent.com/raw/tw_clash', 'interval'=>3600, 'health-check'=>{'enable'=>true, 'url'=>'http://cp.cloudflare.com/generate_204', 'interval'=>300}}"
+    #ruby_merge_hash "$CONFIG_FILE" "['rule-providers']" "'Reject'=>{'type'=>'http', 'behavior'=>'classical', 'url'=>'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Apple.list', 'path'=>'./rule_provider/Apple.list', 'interval'=>86400}"
+
+    #Array Edit Demo
+    #1--config path
+    #2--key name
+    #3--match key name
+    #4--match key value
+    #5--target key name
+    #6--target key value
+    #ruby_arr_edit "$CONFIG_FILE" "['proxy-groups']" "['name']" "Proxy" "['type']" "smart"
+    #ruby_arr_edit "$CONFIG_FILE" "['dns']['nameserver']" "" "114.114.114.114" "" "119.29.29.29"
+
     #Array Insert Value Demo:
     #1--config path
     #2--key name
     #3--position(start from 0, end with -1)
     #4--value
     #ruby_arr_insert "$CONFIG_FILE" "['dns']['nameserver']" "0" "114.114.114.114"
+
+    #Array Insert Hash Demo:
+    #1--config path
+    #2--key name
+    #3--position(start from 0, end with -1)
+    #4--hash
+    #ruby_arr_insert_hash "$CONFIG_FILE" "['proxy-groups']" "0" "{'name'=>'Disney', 'type'=>'select', 'disable-udp'=>false, 'use'=>['TW', 'SG', 'HK']}"
+    #ruby_arr_insert_hash "$CONFIG_FILE" "['proxies']" "0" "{'name'=>'HKG 01', 'type'=>'ss', 'server'=>'cc.hd.abc', 'port'=>'12345', 'cipher'=>'aes-128-gcm', 'password'=>'123456', 'udp'=>true, 'plugin'=>'obfs', 'plugin-opts'=>{'mode'=>'http', 'host'=>'microsoft.com'}}"
+    #ruby_arr_insert_hash "$CONFIG_FILE" "['listeners']" "0" "{'name'=>'name', 'type'=>'shadowsocks', 'port'=>'12345', 'listen'=>'0.0.0.0', 'rule'=>'sub-rule-1', 'proxy'=>'proxy'}"
 
     #Array Insert Other Array Demo:
     #1--config path
@@ -68,7 +103,7 @@ CONFIG_FILE="$1" #config path
     #   begin
     #      Value = YAML.load_file('$CONFIG_FILE');
     #   rescue Exception => e
-    #      puts '${LOGTIME} Error: Load File Failed,【' + e.message + '】';
+    #      puts '${LOGTIME} [error] Load File Failed,【' + e.message + '】';
     #   end;
 
         #General
@@ -82,7 +117,7 @@ CONFIG_FILE="$1" #config path
     #   }.join;
 
     #   rescue Exception => e
-    #      puts '${LOGTIME} Error: Set General Failed,【' + e.message + '】';
+    #      puts '${LOGTIME} [error] Set General Failed,【' + e.message + '】';
     #   ensure
     #      File.open('$CONFIG_FILE','w') {|f| YAML.dump(Value, f)};
     #   end" 2>/dev/null >> $LOG_FILE

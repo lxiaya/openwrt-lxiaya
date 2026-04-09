@@ -6,25 +6,16 @@ require "luci.sys"
 local uci = require("luci.model.uci").cursor()
 local json = require "luci.jsonc"
 local datatype = require "luci.cbi.datatypes"
+local fs = require "luci.openclash"
+
 local addr = arg[1]
 local resolve = arg[2]
 
 local function debug_dns()
-	local info, ip, host, lan_int_name
-	lan_int_name = uci:get("openclash", "config", "lan_interface_name") or "0"
-	if lan_int_name == "0" then
-		ip = luci.sys.exec("uci -q get network.lan.ipaddr |awk -F '/' '{print $1}' 2>/dev/null |tr -d '\n'")
-	else
-		ip = luci.sys.exec(string.format("ip address show %s | grep -w 'inet'  2>/dev/null |grep -Eo 'inet [0-9\.]+' | awk '{print $2}' | tr -d '\n'", lan_int_name))
-	end
-	if not ip or ip == "" then
-		ip = luci.sys.exec("ip address show $(uci -q -p /tmp/state get network.lan.ifname) | grep -w 'inet'  2>/dev/null |grep -Eo 'inet [0-9\.]+' | awk '{print $2}' | tr -d '\n'")
-	end
-	if not ip or ip == "" then
-		ip = luci.sys.exec("ip addr show 2>/dev/null | grep -w 'inet' | grep 'global' | grep 'brd' | grep -Eo 'inet [0-9\.]+' | awk '{print $2}' | head -n 1 | tr -d '\n'")
-	end
-	local port = uci:get("openclash", "config", "cn_port")
-	local passwd = uci:get("openclash", "config", "dashboard_password") or ""
+	local info, ip, host
+	ip = fs.lanip()
+	local port = fs.uci_get_config("config", "cn_port")
+	local passwd = fs.uci_get_config("config", "dashboard_password") or ""
 
 	if datatype.hostname(addr) and ip and port then
 		info_v4 = luci.sys.exec(string.format('curl -sL -m 3 -H "Content-Type: application/json" -H "Authorization: Bearer %s" -XGET http://"%s":"%s"/dns/query?name="%s"', passwd, ip, port, addr))

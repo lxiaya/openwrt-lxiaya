@@ -2,7 +2,7 @@
 local proxy_form
 local openclash = "openclash"
 local NXFS = require "nixio.fs"
-local SYS  = require "luci.sys"
+local SYS = require "luci.sys"
 local HTTP = require "luci.http"
 local DISP = require "luci.dispatcher"
 local UTIL = require "luci.util"
@@ -38,12 +38,11 @@ p.inputstyle="apply"
 Button.render(p,x,r)
 end
 btned1.write=function(r,x)
-	local file_path = "etc/openclash/proxy_provider/" .. fs.basename(p[x].name)
-	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "other-file-edit", "proxy-provider-file-manage", "%s") %file_path)
+	local file_path = "/etc/openclash/proxy_provider/" .. fs.basename(p[x].name)
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "other-file-edit", "proxy-provider-file-manage") .. "?file=" .. HTTP.urlencode(file_path))
 end
 
 btndl1 = tb1:option(Button,"download1",translate("Download Config"))
-btndl1.template="openclash/other_button"
 btndl1.render=function(y,x,r)
 y.inputstyle="remove"
 Button.render(y,x,r)
@@ -96,7 +95,7 @@ o = a:option(Button, "Refresh", " ")
 o.inputtitle = translate("Refresh Page")
 o.inputstyle = "apply"
 o.write = function()
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "proxy-provider-file-manage"))
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "proxy-provider-file-manage"))
 end
 
 o = a:option(DummyValue, "Create", " ")
@@ -108,15 +107,15 @@ o = a:option(Button, "Delete_all", " ")
 o.inputtitle = translate("Delete All File")
 o.inputstyle = "remove"
 o.write = function()
-  luci.sys.call("rm -rf /etc/openclash/proxy_provider/* >/dev/null 2>&1")
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "proxy-provider-file-manage"))
+	luci.sys.call("rm -rf /etc/openclash/proxy_provider/* >/dev/null 2>&1")
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "proxy-provider-file-manage"))
 end
 
 o = a:option(Button, "Apply", " ")
 o.inputtitle = translate("Back Settings")
 o.inputstyle = "reset"
 o.write = function()
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "config"))
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "config"))
 end
 
 proxy_form:append(Template("openclash/toolbar_show"))

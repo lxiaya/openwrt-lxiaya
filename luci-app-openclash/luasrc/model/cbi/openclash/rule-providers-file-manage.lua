@@ -2,7 +2,7 @@
 local rule_form
 local openclash = "openclash"
 local NXFS = require "nixio.fs"
-local SYS  = require "luci.sys"
+local SYS = require "luci.sys"
 local HTTP = require "luci.http"
 local DISP = require "luci.dispatcher"
 local UTIL = require "luci.util"
@@ -38,12 +38,11 @@ g.inputstyle="apply"
 Button.render(g,n,h)
 end
 btned1.write=function(h,n)
-	local file_path = "etc/openclash/rule_provider/" .. fs.basename(g[n].name)
-	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "other-file-edit", "rule-providers-file-manage", "%s") %file_path)
+	local file_path = "/etc/openclash/rule_provider/" .. fs.basename(g[n].name)
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "other-file-edit", "rule-providers-file-manage") .. "?file=" .. HTTP.urlencode(file_path))
 end
 
 btndl2 = tb2:option(Button,"download2",translate("Download Config"))
-btndl2.template="openclash/other_button"
 btndl2.render=function(m,n,h)
 m.inputstyle="remove"
 Button.render(m,n,h)
@@ -87,7 +86,7 @@ return h
 end
 
 local t = {
-    {Refresh, Create, Delete_all, Apply}
+	{Refresh, Create, Delete_all, Apply}
 }
 
 a = rule_form:section(Table, t)
@@ -96,7 +95,7 @@ o = a:option(Button, "Refresh", " ")
 o.inputtitle = translate("Refresh Page")
 o.inputstyle = "apply"
 o.write = function()
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "rule-providers-file-manage"))
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "rule-providers-file-manage"))
 end
 
 o = a:option(DummyValue, "Create", " ")
@@ -108,15 +107,15 @@ o = a:option(Button, "Delete_all", " ")
 o.inputtitle = translate("Delete All File")
 o.inputstyle = "remove"
 o.write = function()
-  luci.sys.call("rm -rf /etc/openclash/rule_provider/* >/dev/null 2>&1")
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "rule-providers-file-manage"))
+	luci.sys.call("rm -rf /etc/openclash/rule_provider/* >/dev/null 2>&1")
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "rule-providers-file-manage"))
 end
 
 o = a:option(Button, "Apply", " ")
 o.inputtitle = translate("Back Settings")
 o.inputstyle = "reset"
 o.write = function()
-  HTTP.redirect(DISP.build_url("admin", "services", "openclash", "config"))
+	HTTP.redirect(DISP.build_url("admin", "services", "openclash", "config"))
 end
 
 rule_form:append(Template("openclash/toolbar_show"))
